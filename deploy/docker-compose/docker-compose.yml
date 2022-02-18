@@ -1,4 +1,4 @@
-version: '2'
+version: '2.1'
 
 services:
   front-end:
@@ -166,10 +166,18 @@ services:
     read_only: true
     tmpfs:
       - /tmp:rw,noexec,nosuid
-  user-sim:
-    image: weaveworksdemos/load-test:0.1.1
+  it-test:
+    image: it-test:latest
     cap_drop:
       - all
     read_only: true
-    hostname: user-simulator
-    command: "-d 60 -r 200 -c 2 -h edge-router"
+    hostname: it-test
+    depends_on:
+      user:
+        condition: service_started
+      user-db:
+        condition: service_started
+      carts:
+        condition: service_started
+      carts-db:
+        condition: service_started
